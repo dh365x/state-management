@@ -1,24 +1,31 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface IForm {
 	toDo: string;
 }
 
-function ToDoList() {
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		watch,
-		formState: { errors },
-	} = useForm<IForm>();
+interface IToDo {
+	id: number;
+	text: string;
+	category: "TO_DO" | "DOING" | "DONE";
+}
 
-	const handleValid = (data: IForm) => {
-		console.log("Added a To Do:", data.toDo);
+function ToDoList() {
+	const [toDos, setToDos] = useState<IToDo[]>([]);
+	const { register, handleSubmit, setValue } = useForm<IForm>();
+
+	const handleValid = ({ toDo }: IForm) => {
+		setToDos((prevToDos) => [
+			{
+				id: Date.now(),
+				text: toDo,
+				category: "TO_DO",
+			},
+			...prevToDos,
+		]);
 		setValue("toDo", "");
 	};
-
-	console.log(watch(), errors);
 
 	return (
 		<>
@@ -31,6 +38,11 @@ function ToDoList() {
 				/>
 				<button>Add</button>
 			</form>
+			<ul>
+				{toDos.map((toDo) => (
+					<li key={toDo.id}>{toDo.text}</li>
+				))}
+			</ul>
 		</>
 	);
 }
