@@ -6,6 +6,16 @@ export enum Categories {
 	"DONE" = "DONE",
 }
 
+export interface ICustomCategory {
+	id: number;
+	title: string;
+}
+
+export const customCategoryState = atom<ICustomCategory[]>({
+	key: "customCategory",
+	default: [],
+});
+
 export interface IToDo {
 	id: number;
 	text: string;
