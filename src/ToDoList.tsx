@@ -1,31 +1,34 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+interface IForm {
+	toDo: string;
+}
 
 function ToDoList() {
-	const [toDo, setToDo] = useState("");
-	const [toDoError, setToDoError] = useState("");
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		watch,
+		formState: { errors },
+	} = useForm<IForm>();
 
-	const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-		const {
-			currentTarget: { value },
-		} = event;
-		setToDoError("");
-		setToDo(value);
+	const handleValid = (data: IForm) => {
+		console.log("Added a To Do:", data.toDo);
+		setValue("toDo", "");
 	};
 
-	const onSubmit = (event: React.FocusEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		if (toDo.length < 2) {
-			return setToDoError("it should be longer");
-		}
-		console.log("submit");
-		setToDo("");
-	};
+	console.log(watch(), errors);
 
 	return (
 		<>
-			<form onSubmit={onSubmit}>
-				<input value={toDo} onChange={onChange} placeholder="Write a to do" />
-				{toDoError !== "" ? toDoError : null}
+			<form onSubmit={handleSubmit(handleValid)}>
+				<input
+					{...register("toDo", {
+						required: "Please write a to do",
+					})}
+					placeholder="Write a To Do"
+				/>
 				<button>Add</button>
 			</form>
 		</>
